@@ -24,21 +24,21 @@ public class RunAfterBootService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.d(TAG_BOOT_EXECUTE_SERVICE, "RunAfterBootService onCreate() method.");
+//        Log.d(TAG_BOOT_EXECUTE_SERVICE, "RunAfterBootService onCreate() method.");
 
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        String message = "RunAfterBootService onStartCommand() method.";
+        String message = "Turning on adb after boot complete";
 
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
 
-        Settings.Global.putInt(getApplicationContext().getContentResolver(), Settings.Global.ADB_ENABLED, 0);
+        Settings.Global.putInt(getApplicationContext().getContentResolver(), Settings.Global.ADB_ENABLED, 1);
 
 
-        Log.d(TAG_BOOT_EXECUTE_SERVICE, "RunAfterBootService onStartCommand() method.");
+        Log.d(TAG_BOOT_EXECUTE_SERVICE, "Adb turn on success: "+ getAdbState());
 
         return super.onStartCommand(intent, flags, startId);
     }
@@ -46,5 +46,17 @@ public class RunAfterBootService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+    }
+
+
+    public boolean getAdbState() {
+        try {
+            int state = Settings.Global.getInt(getApplicationContext().getContentResolver(), Settings.Global.ADB_ENABLED);
+            return state == 1 ? true : false;
+        } catch (Settings.SettingNotFoundException e) {
+            e.printStackTrace();
+            return false;
+        }
+
     }
 }
